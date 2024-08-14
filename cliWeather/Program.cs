@@ -26,7 +26,7 @@ namespace cliWeather
                         weatherCommand(input);
                         break;
                     default:
-                        Console.WriteLine($"The command '{input}' could not be found!");
+                        Console.WriteLine($"The command '{input[0]}' could not be found!");
                         break;
                 }
 
@@ -35,9 +35,22 @@ namespace cliWeather
 
         static void weatherCommand(string[] input)
         {
-            Console.WriteLine("Not yet implemented");
-            // Console.WriteLine($"Entered city: {input[1]}");
-            return;
+            string city;
+            try
+            {
+                city = input[1];
+            } catch (Exception e) 
+            {
+                Console.WriteLine("Usage:");
+                Console.WriteLine("weather [city]");
+                return;
+            }
+            
+            city = city.ToLower();
+            string temperature = "Temperature not found";
+
+
+            Console.WriteLine($"The temperature in {city} is: {temperature} ");
         }
 
         static void helpCommand()
