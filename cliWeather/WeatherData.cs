@@ -78,7 +78,6 @@ internal class WeatherData
                 closestIndex = i;
             }
         }
-
         return closestIndex;
     }
 }
