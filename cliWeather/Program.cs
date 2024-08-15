@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace cliWeather
+﻿namespace cliWeather
 {
     internal class Program
     {
@@ -27,6 +24,9 @@ namespace cliWeather
                         break;
                     case "weather":
                         await weatherCommand(input);
+                        break;
+                    case "hourly":
+                        await hourlyCommand(input);
                         break;
                     default:
                         Console.WriteLine($"The command '{input[0]}' could not be found!");
@@ -70,12 +70,30 @@ namespace cliWeather
             }
         }
 
+        private static async Task hourlyCommand(string[] input)
+        {
+            string city = weatherCheck(input);
+            if (string.IsNullOrEmpty(city)) { return; }
+
+            double[] choords = CityData.getCoordinates(city);
+            if (choords[0] != 0 && choords[1] != 0)
+            {
+                string temperatures = await WeatherData.getHourlyTemperatureAsync(choords);
+                Console.WriteLine($"{temperatures}");
+            }
+            else
+            {
+                Console.WriteLine("City not found.");
+            }
+        }
+
         private static void helpCommand()
         {
             Console.WriteLine("Usage:");
             Console.WriteLine("exit\t\t\tExit the program");
             Console.WriteLine("now [city]\t\tShow the current temperature");
-            Console.WriteLine("weather [city]\t\tShow the lowest and highest temperatures for the current day.");
+            Console.WriteLine("weather [city]\t\tShow the lowest and highest temperatures for the current day");
+            Console.WriteLine("hourly [city]\t\tShow the weather for the next 5 hours");
         }
 
         private static string[] getInput(string quote)
@@ -107,9 +125,9 @@ namespace cliWeather
             else
             {
                 Console.WriteLine("Usage:");
-                Console.WriteLine("now [city]");
+                Console.WriteLine($"{input[0]} [city]");
                 return string.Empty;
             }
-        }
     }
+}
 }

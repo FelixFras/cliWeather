@@ -82,6 +82,65 @@ internal class WeatherData
         }
     }
 
+    public static async Task<string> getHourlyTemperatureAsync(double[] choords)
+    {
+        string unit = "&temperature_unit=celsius";
+        string url = $"https://api.open-meteo.com/v1/forecast?latitude={choords[0]}&longitude={choords[1]}&hourly=temperature_2m&timeformat=unixtime{unit}";
+
+        try
+        {
+            string json = await apiRequestAsync(url);
+            var data = JsonObject.Parse(json);
+
+            var hourly = data?["hourly"] as JsonObject;
+
+            if (hourly != null)
+            {
+                var timeArray = hourly["time"]?.AsArray();
+                var tempArray = hourly["temperature_2m"]?.AsArray();
+
+                if (timeArray != null && tempArray != null && timeArray.Count > 0)
+                {
+                    long currentUnixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+                    // get index of first hour
+                    int index = 0;
+                    for (int i = 0; i < timeArray.Count; i++)
+                    {
+                        long time = timeArray[i]?.GetValue<long>() ?? 0;
+                        if (time > currentUnixTime)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    string hourlyTemps = "";
+                    for (int i = index; i < timeArray.Count && i < index + 25; i++) // show next 24 hours
+                    {
+                        long time = timeArray[i]?.GetValue<long>() ?? 0;
+                        double temp = tempArray[i]?.GetValue<double>() ?? double.NaN;
+                        DateTimeOffset dateTime = DateTimeOffset.FromUnixTimeSeconds(time);
+                        hourlyTemps += $"{dateTime:HH:mm}: {temp}°C\n";
+                    }
+
+                    return hourlyTemps.TrimEnd();
+                }
+            }
+
+            return "Hourly temperature data not found.";
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return "Error fetching hourly temperature.";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Unexpected error: {e.Message}");
+            return "Unexpected error occurred.";
+        }
+    }
 
     private static async Task<string> apiRequestAsync(string url)
     {
