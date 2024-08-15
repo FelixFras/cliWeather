@@ -47,11 +47,28 @@ namespace cliWeather
             }
             
             city = city.ToLower();
-            string temperature = "Temperature not found";
+
+            double[] choords = CityData.getCoordinates(city);
+            string temperature;
+
+            if (choords[0] != 0 && choords[1] != 0)
+            {
+                temperature = WeatherData.getTemperature(choords);
+                Console.WriteLine($"The temperature in {city} is: {temperature} ");
+                return;
+            } else
+            {
+                Console.WriteLine("City not found.");
+                return;
+            }
+
+             
 
 
-            Console.WriteLine($"The temperature in {city} is: {temperature} ");
+            
         }
+
+
 
         static void helpCommand()
         {
