@@ -16,3 +16,9 @@ I made this command line interface weather app using C# and the .NET framework. 
 Any command regarding the weather will at first execute the function responsible for converting the given city into the latitude and longitude this is done by the help of the first named API. These coordinates are then used to call the weather API. The weather API gets called with different parameters, depending on the executed command.
 
 ![project picture](/assets/image.png)
+
+
+### Usage
+
+The binary files can be found under releases.  
+The project does not need anything aditional to run.
