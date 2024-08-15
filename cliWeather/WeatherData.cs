@@ -8,7 +8,7 @@ internal class WeatherData
     {
         // string unit = "&temperature_unit=fahrenheit";
         string unit = "&temperature_unit=celsius";
-        string url = $"https://api.open-meteo.com/v1/forecast?latitude={choords[0]}&longitude={choords[1]}&current=temperature_2m&timeformat=unixtime{unit}";
+        string url = $"https://api.open-meteo.com/v1/forecast?latitude={choords[0]}&longitude={choords[1]}&current=temperature_2m&timeformat=unixtime{unit}&timezone=Europe%2FLondon";
 
         try
         {
